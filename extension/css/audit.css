@@ -1,0 +1,84 @@
+ul {
+    margin: 0;
+    padding: 0 0 0 2em;
+}
+
+
+.control-panel {
+    margin-bottom: 1em;
+}
+
+
+.layout {
+    border-spacing: 0;
+}
+.layout img {
+    height: 16px;
+    cursor: pointer;
+}
+.layout tr:not(.header) td:first-child {
+    text-align: right;
+}
+.layout tr:not(.header) td:not(:first-child) {
+    text-align: center;
+}
+.layout tr:not(.header) :nth-child(even) {
+    background-color: rgba(0,0,0,.1);
+}
+
+
+.footnote {
+    margin-top: 1em;
+    font-size: smaller;
+    color: #aaa;
+}
+
+
+.dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.dialog .dialog-content {
+    min-width: 25vw;
+    max-width: 80vw;
+    background-color: white;
+    border-radius: .5em;
+    box-shadow: 3px 3px 5px;
+}
+.dialog .title-bar {
+    padding: .5em 1em;
+    border-bottom: 1px solid #dadce0;
+    display: flex;
+    align-items: center;
+}
+.dialog .title-bar img {
+    height: 16px;
+    margin-right: 1em;
+}
+.dialog .title {
+    font-weight: bold;
+    margin-right: auto;
+    text-transform: capitalize;
+}
+.dialog .close-button {
+    font-size: larger;
+    font-weight: bold;
+    cursor: pointer;
+    padding: .25em;
+}
+.dialog .dialog-body {
+    padding: 1em;
+}
+.dialog .risk-assessment {
+    margin-top: 1em;
+}
+.dialog .links {
+    margin-top: 1em;
+}

@@ -1,0 +1,11 @@
+{
+  "extension_name": {
+    "message": "Extension Auditor"
+  },
+  "extension_short_name": {
+    "message": "Extension Auditor"
+  },
+  "extension_description": {
+    "message": "Assess risk levels of installed browser extensions"
+  }
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Extension Auditor</title>
+        <link rel="stylesheet" href="css/audit.css">
+
+        <script src="js/common.js"></script>
+        <script src="js/databind.js"></script>
+        <script src="js/audit.js"></script>
+    </head>
+    <body bind-var-include-disabled="false"
+        bind-statement-1="this.loadExtensions(#includeDisabled)"
+        bind-event-keyup="if (event.key == 'Escape') dialog.visible = false">
+
+        <div class="control-panel" bind-repeater-if="queryString.popup ? 0 : 1">
+            <input type="checkbox" bind-event-change="#includeDisabled = !#includeDisabled" id="cbIncludeDisabled">
+            <label for="cbIncludeDisabled">Include disabled extensions</label>
+        </div>
+        
+        <table class="layout">
+            <tr class="header">
+                <td>
+                    <img src="img/popout.png" bind-repeater-if="queryString.popup ? 1 : 0" bind-event-click="this.popout()">
+                </td>
+                <td bind-repeater-i="#exts.length">
+                    <img bind-statement-1="thisElem.src = this.getExtensionIcon(#exts[#i], 16)"
+                        bind-event-click="this.showDialog(#exts[#i])">
+                </td>
+            </tr>
+            <tr>
+                <td>(risk score)</td>
+                <td bind-repeater-i="#exts.length">
+                    {{this.getRiskScore(#exts[#i])}}
+                </td>
+            </tr>
+            <tr bind-repeater-row="#perms.length"
+                bind-var-perm="#perms[#row]"
+                bind-statement-1="thisElem.style.backgroundColor = this.getRiskColor(config.risk[#perm] || 0)">
+                <td>{{#perm}}</td>
+                <td bind-repeater-i="#exts.length">
+                    {{#exts[#i].permissions.includes(#perm) ? 'x' : ''}}
+                </td>
+            </tr>
+            <tr bind-var-perm="'wildcardUrls'"
+                bind-statement-1="thisElem.style.backgroundColor = this.getRiskColor(config.risk[#perm] || 0)">
+                <td>&lt;all_urls&gt;</td>
+                <td bind-repeater-i="#exts.length">
+                    {{this.hasWildcardHostPermission(#exts[#i]) ? 'x' : ''}}
+                </td>
+            </tr>
+        </table>
+
+        <div class="dialog" bind-repeater-if="#dialog.visible ? 1 : 0">
+            <div class="dialog-content">
+                <div class="title-bar">
+                    <img bind-statement-1="thisElem.src = this.getExtensionIcon(#dialog.extension, 16)">
+                    <div class="title">{{#dialog.extension.shortName}}</div>
+                    <div class="close-button" bind-event-click="#dialog.visible = false">&times;</div>
+                </div>
+                <div class="dialog-body">
+                    <ul>
+                        <li bind-repeater-i="#dialog.extension.warnings.length">{{#dialog.extension.warnings[#i]}}</li>
+                        <li bind-repeater-i="#dialog.extension.hostPermissions.length">{{#dialog.extension.hostPermissions[#i]}}</li>
+                    </ul>
+                    <div class="risk-assessment" bind-var-score="this.getRiskScore(#dialog.extension)">
+                        Risk Score:
+                        <b bind-statement-1="thisElem.style.color = #score &gt;= 1 ? 'red' : ''">{{#score}}</b>
+                        ({{
+                            if (#score &gt;= 2) return "High";
+                            else if (#score &gt;= 1) return "Medium";
+                            else return "Low";
+                        }})
+                    </div>
+                    <div class="links">
+                        <a target="extension-auditor-discuss" href="https://">Discuss</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
