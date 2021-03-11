@@ -11,7 +11,7 @@ const config = {
         tabs: .5,
         topSites: .1,
         webNavigation: .5,
-        webRequest: .9,
+        webRequest: .5,
         wildcardUrls: 1,
     },
     wildcard: /^\s*(<all_urls>|(http|https|\*):\/\/\*(\.\w+)?\/)/i

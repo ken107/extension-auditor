@@ -1,0 +1,35 @@
+
+.enabled-group, .disabled-group {
+    margin-top: 1.25em;
+}
+.disabled-group .ext-name {
+    color: gray;
+}
+
+
+.ext {
+    display: flex;
+}
+.ext img {
+    height: 16px;
+    margin-right: .5em;
+}
+.ext .ext-name {
+    white-space: nowrap;
+    margin-right: auto;
+    cursor: pointer;
+}
+.ext .ext-name:hover {
+    text-decoration: underline;
+}
+.ext a {
+    margin-left: .5em;
+}
+
+
+.dialog .ext-permissions {
+    margin-top: 1em;
+}
+.dialog .ext-links {
+    margin-top: 1em;
+}
