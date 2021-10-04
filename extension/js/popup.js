@@ -20,6 +20,7 @@ function isRisky(extension) {
     const risky = [
         "Read and change all your data on the websites you visit",
         "Read and change all your data on the websites that you visit",
+        "Read and change all your data on all websites",
     ]
     return extension.warnings.some(x => risky.includes(x))
 }
