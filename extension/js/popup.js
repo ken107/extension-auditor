@@ -11,7 +11,7 @@ async function loadExtensions() {
         let result = await request("management", "getAll", [])
         result = result.filter(ext => ext.type == "extension")
         await Promise.all(result.map(fetchExtDetails))
-        result => result.filter(isRisky)
+        result = result.filter(isRisky)
         exts = result.filter(ext => ext.enabled)
         extsd = result.filter(ext => !ext.enabled)
     }
@@ -26,7 +26,7 @@ async function fetchExtDetails(ext) {
 }
 
 function isRisky(extension) {
-    return hasWildcardHostPermissions(extension.warnings)
+    return hasWildcardHostPermission(extension.warnings)
 }
 
 function getExtensionIcon(extension, size) {
