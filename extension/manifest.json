@@ -1,15 +1,16 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "__MSG_extension_name__",
   "short_name": "__MSG_extension_short_name__",
   "description": "__MSG_extension_description__",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "default_locale": "en",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtF2TcPd9H4wNtJ3ybIIWEu5ygXzFwzeY39e4epvXegRBVELnEBqYZVbj2BYuiXeev/QkerVVDxQX8A3V6UbK4UaQqWPBN3Sq3H9jNd0zohm4z1QhiIeEVvyRAGX8eEwgr2wEJTatfCTu8yDv+3wIGOPD5LaUIc+RB1VggGNEPZmrLgklFrj3jzph+kLfGX3ujSenMGjMYcQkZYicHeQk/MZyxpDVbaJj7IvMNOlmSbsY3QrWm63EcCbSsCbct0mofaWb3cFkgh5HsCoBPEGXkEvQFUOYW1GCvNJQwODInyh9WC/5zlJ2H15nWdsN3EWXqcqQxZYmGcGQ4m7CucXBbQIDAQAB",
 
-  "browser_action": {
+  "action": {
     "default_icon": "img/icon.png",
-    "default_popup": "popup.html?popup=true"
+    "default_popup": "sandbox.html?url=popup.html%3Fpopup=true"
   },
   "icons": {
     "128": "img/icon.png"
@@ -17,5 +18,10 @@
   "permissions": [
     "management"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "sandbox": {
+    "pages": [
+      "popup.html",
+      "audit.html"
+    ]
+  }
 }

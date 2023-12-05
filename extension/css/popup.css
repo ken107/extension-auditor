@@ -10,12 +10,14 @@
 .ext {
     display: flex;
 }
+.ext:hover {
+    background-color: #eee;
+}
 .ext img {
     height: 16px;
     margin-right: .5em;
 }
 .ext .ext-name {
-    white-space: nowrap;
     margin-right: auto;
     cursor: pointer;
 }

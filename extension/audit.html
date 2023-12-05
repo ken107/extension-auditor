@@ -24,7 +24,7 @@
                     <img src="img/popout.png" bind-repeater-if="queryString.popup ? 1 : 0" bind-event-click="this.popout()">
                 </td>
                 <td bind-repeater-i="#exts.length">
-                    <img bind-statement-1="thisElem.src = this.getExtensionIcon(#exts[#i], 16)"
+                    <img bind-statement-1="thisElem.src = #exts[#i].icon"
                         bind-event-click="this.showDialog(#exts[#i])">
                 </td>
             </tr>
@@ -46,7 +46,7 @@
                 bind-statement-1="thisElem.style.backgroundColor = this.getRiskColor(config.risk[#perm] || 0)">
                 <td>&lt;all_urls&gt;</td>
                 <td bind-repeater-i="#exts.length">
-                    {{this.hasWildcardHostPermission(#exts[#i]) ? 'x' : ''}}
+                    {{hasWildcardHostPermission(#exts[#i].warnings) ? 'x' : ''}}
                 </td>
             </tr>
         </table>
@@ -54,7 +54,7 @@
         <div class="dialog" bind-repeater-if="#dialog.visible ? 1 : 0">
             <div class="dialog-content">
                 <div class="title-bar">
-                    <img bind-statement-1="thisElem.src = this.getExtensionIcon(#dialog.extension, 16)">
+                    <img bind-statement-1="thisElem.src = #dialog.extension.icon">
                     <div class="title">{{#dialog.extension.shortName}}</div>
                     <div class="close-button" bind-event-click="#dialog.visible = false">&times;</div>
                 </div>

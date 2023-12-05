@@ -2,27 +2,31 @@
 exts = null
 extsd = null
 loadExtensions()
+request("other", "setSize", [400, 500])
+    .catch(console.error)
 
 
-function loadExtensions() {
-    new Promise(fulfill => chrome.management.getAll(fulfill))
-        .then(result => result.filter(ext => ext.type == "extension"))
-        .then(also(result => Promise.all(result.map(ext => new Promise(fulfill => chrome.management.getPermissionWarningsById(ext.id, fulfill)).then(x => ext.warnings = x)))))
-        .then(result => result.filter(isRisky))
-        .then(result => {
-            exts = result.filter(ext => ext.enabled)
-            extsd = result.filter(ext => !ext.enabled)
-        })
-        .catch(console.error)
+async function loadExtensions() {
+    try {
+        let result = await request("management", "getAll", [])
+        result = result.filter(ext => ext.type == "extension")
+        await Promise.all(result.map(fetchExtDetails))
+        result => result.filter(isRisky)
+        exts = result.filter(ext => ext.enabled)
+        extsd = result.filter(ext => !ext.enabled)
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
+
+async function fetchExtDetails(ext) {
+    ext.warnings = await request("management", "getPermissionWarningsById", [ext.id])
+    ext.icon = await request("other", "toDataUrl", [getExtensionIcon(ext, 16)])
 }
 
 function isRisky(extension) {
-    const risky = [
-        "Read and change all your data on the websites you visit",
-        "Read and change all your data on the websites that you visit",
-        "Read and change all your data on all websites",
-    ]
-    return extension.warnings.some(x => risky.includes(x))
+    return hasWildcardHostPermissions(extension.warnings)
 }
 
 function getExtensionIcon(extension, size) {
@@ -32,14 +36,19 @@ function getExtensionIcon(extension, size) {
 }
 
 function discuss(extension) {
-    chrome.tabs.create({
-        url: "https://groups.google.com/g/extension-auditor"
-    })
+    request("tabs", "create", [{url: "https://groups.google.com/g/extension-auditor"}])
+        .catch(console.error)
 }
 
 function setEnabled(extension, yes) {
-    new Promise(fulfill => chrome.management.setEnabled(extension.id, yes, fulfill))
+    request("management", "setEnabled", [extension.id, yes])
         .then(loadExtensions)
+        .catch(console.error)
+}
+
+function viewPermissionMatrix() {
+    request('tabs', 'create', [{url: 'sandbox.html?url=audit.html'}])
+        .catch(console.error)
 }
 
 

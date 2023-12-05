@@ -10,14 +10,14 @@
         <script src="js/popup.js"></script>
     </head>
     <body bind-event-keyup="if (event.key == 'Escape') dialog.visible = false">
-        <div bind-event-click="open('audit.html', '_blank')">
+        <div bind-event-click="this.viewPermissionMatrix()">
             The following extensions can read and change all your data on the websites you visit.
             Consider disabling those you don't use frequently.
         </div>
 
         <div class="enabled-group">
             <div class="ext" bind-repeater-i="#exts.length" bind-var-ext="#exts[#i]">
-                <img bind-statement-1="thisElem.src = getExtensionIcon(#ext, 16)">
+                <img bind-statement-1="thisElem.src = #ext.icon">
                 <div class="ext-name" bind-event-click="this.showDialog(#ext)">{{#ext.shortName}}</div>
                 <a href="#" bind-event-click="this.setEnabled(#ext, false); return false">Disable</a>
                 <a href="#" bind-event-click="this.discuss(#ext); return false">Discuss</a>
@@ -26,17 +26,21 @@
 
         <div class="disabled-group">
             <div class="ext" bind-repeater-i="#extsd.length" bind-var-ext="#extsd[#i]">
-                <img bind-statement-1="thisElem.src = getExtensionIcon(#ext, 16)">
+                <img bind-statement-1="thisElem.src = #ext.icon">
                 <div class="ext-name" bind-event-click="this.showDialog(#ext)">{{#ext.shortName}}</div>
                 <a href="#" bind-event-click="this.setEnabled(#ext, true); return false">Enable</a>
                 <a href="#" bind-event-click="this.discuss(#ext); return false">Discuss</a>
             </div>
         </div>
 
+        <div class="disabled-group">
+            <a href="#" bind-event-click="this.viewPermissionMatrix()">View permission matrix</a>
+        </div>
+
         <div class="dialog" bind-repeater-if="#dialog.visible ? 1 : 0">
             <div class="dialog-content">
                 <div class="title-bar">
-                    <img bind-statement-1="thisElem.src = this.getExtensionIcon(#dialog.extension, 16)">
+                    <img bind-statement-1="thisElem.src = #dialog.extension.icon">
                     <div class="title">{{#dialog.extension.shortName}}</div>
                     <div class="close-button" bind-event-click="#dialog.visible = false">&times;</div>
                 </div>

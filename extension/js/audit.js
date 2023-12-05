@@ -2,16 +2,17 @@
 const config = {
     risk: {
         declarativeNetRequest: .2,
-        declarativeWebRequest: .5,
+        declarativeWebRequest: .2,
         geolocation: .1,
-        history: .5,
+        history: .3,
         proxy: .5,
         scripting: 1,
         signedInDevices: .1,
-        tabs: .5,
+        tabs: .3,
         topSites: .1,
-        webNavigation: .5,
-        webRequest: .5,
+        webNavigation: .3,
+        webRequest: .3,
+        webRequestBlocking: .5,
         wildcardUrls: 1,
     },
     wildcard: /^\s*(<all_urls>|(http|https|\*):\/\/\*(\.\w+)?\/)/i
@@ -22,13 +23,22 @@ exts = null
 
 
 
-function loadExtensions(includeDisabled) {
-    new Promise(fulfill => chrome.management.getAll(fulfill))
-        .then(result => result.filter(ext => ext.type == "extension" && (includeDisabled || ext.enabled)))
-        .then(also(result => Promise.all(result.map(ext => new Promise(fulfill => chrome.management.getPermissionWarningsById(ext.id, fulfill)).then(x => ext.warnings = x)))))
-        .then(result => exts = result)
-        .then(() => perms = Array.from(new Set(exts.flatMap(ext => ext.permissions))).sort())
-        .catch(console.error)
+async function loadExtensions(includeDisabled) {
+    try {
+        let result = await request("management", "getAll", [])
+        result = result.filter(ext => ext.type == "extension" && (includeDisabled || ext.enabled))
+        await Promise.all(result.map(fetchExtDetails))
+        exts = result
+        perms = Array.from(new Set(exts.flatMap(ext => ext.permissions))).sort()
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
+
+async function fetchExtDetails(ext) {
+    ext.warnings = await request("management", "getPermissionWarningsById", [ext.id])
+    ext.icon = await request("other", "toDataUrl", [getExtensionIcon(ext, 16)])
 }
 
 function getExtensionIcon(extension, size) {
@@ -43,18 +53,13 @@ function getRiskColor(level) {
 
 function getRiskScore(extension) {
     let risk = (extension.permissions || []).reduce((sum, perm) => sum + (config.risk[perm] || 0), 0)
-    if (hasWildcardHostPermission(extension)) risk += config.risk.wildcardUrls
+    if (hasWildcardHostPermission(extension.warnings)) risk += config.risk.wildcardUrls
     return risk
 }
 
-function hasWildcardHostPermission(extension) {
-    return extension.warnings.includes("Read and change all your data on the websites you visit")
-}
-
 function popout() {
-    chrome.tabs.create({
-        url: chrome.runtime.getURL("audit.html")
-    })
+    request("tabs", "create", [{url: "sandbox.html?url=audit.html"}])
+        .catch(console.error)
 }
 
 
